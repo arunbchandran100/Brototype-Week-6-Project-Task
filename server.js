@@ -3,6 +3,10 @@ const app = express()
 const session = require('express-session')
 const nocache = require("nocache");
 app.set("view engine", "ejs");
+const path = require("path");
+app.set("views", path.join(__dirname, "views"));
+
+
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -13,56 +17,9 @@ app.use(session({
     saveUninitialized:true,
 }))
 
-const username = 'arun';
-const password = '1234';
+const userRoute = require("./routes/user")
 
-function checkauth(req,res,next){
-    if(req.session.isloggin){
-        next()
-    }
-    else{
-        res.redirect('/login')
-    }
-}
-
-function isnotauth(req,res,next){
-    if(!req.session.isloggin){
-        next()
-    }
-    else{
-        res.redirect('/home')
-    }
-}
-
-app.use(nocache());
-
-
-app.get("/login", isnotauth,(req, res) => {
-    res.render("login.ejs",{message:null});
-});
-
-app.post("/login", (req, res) => {
-    if (username === req.body.username && password === req.body.password) {
-        req.session.isloggin = true;
-        res.redirect("/home");
-    } else {
-        res.render("login.ejs", { message: "wrong username or password" });
-    }
-});
-
-
-
-
-app.get('/home',checkauth,(req,res)=>{
-    res.render('home.ejs',{name:'Arun'})
-})
-
-app.post('/home',(req,res)=>{
-    req.session.destroy(()=>{
-        res.redirect("/login")
-    })
-    
-})
+app.use("/",userRoute)
 
 app.listen(3000,()=>{
     console.log('running at 3000')
