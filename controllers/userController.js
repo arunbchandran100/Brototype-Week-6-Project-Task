@@ -1,5 +1,7 @@
 const collection = require("../models/mongodb");
-const isAuthenticated = require("../middleware/authmildware");
+const userAuthenticated = require("../middleware/authmildware");
+// const { userAuthenticated, adminAuthenticated } = require("../middleware/authmildware");
+
 
 ///////////////////Signup page/////////////////////
 exports.signup = (req, res) => {
@@ -58,23 +60,21 @@ exports.loginpost = async (req, res) => {
 
 ///////////////////Home page/////////////////////
 exports.home = [
-    isAuthenticated,
+    userAuthenticated,
     async (req, res) => {
         try {
-            const user = await collection.findOne({ email: req.session.user });
-            if (user) {
-                res.render("user/home", {
-                    name: user.name,
-                    mail_id: req.session.user,
-                });
-            } 
-            
-            else {
-                req.session.user = false;
-                res.redirect("/user/login");
-            }
+        const user = await collection.findOne({ email: req.session.user });
+        if (user) {
+            res.render("user/home", {
+            name: user.name,
+            mail_id: req.session.user,
+            });
+        } else {
+            req.session.user = false;
+            res.redirect("/user/login");
+        }
         } catch (error) {
-            console.error("Error happened", error.message);
+            onsole.error("Error happened", error.message);
         }
     },
 ];
