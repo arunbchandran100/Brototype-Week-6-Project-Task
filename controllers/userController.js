@@ -26,7 +26,7 @@ exports.signuppost = async (req, res) => {
         console.log("User already exists");
     } else {
         await collection.insertMany(userData);
-        res.redirect("/login");
+        res.redirect("/user/login");
     }
 };
 
@@ -35,7 +35,7 @@ exports.login = (req, res) => {
     const errorMessage = req.session.err || " ";
     req.session.err = " "; // Clear the error after showing it
     if (req.session.user) {
-        res.redirect("/home");
+        res.redirect("/user/home");
     } else {
         res.render("user/login", { errorMessage }); // Pass errorMessage instead of message
     }
@@ -49,14 +49,14 @@ exports.loginpost = async (req, res) => {
             console.log("Auth done");
             req.session.user = req.body.email;
             req.session.name = req.body.name;
-            res.redirect("/home");
+            res.redirect("/user/home");
         } else {
             req.session.err = "Invalid 11email address or password";
-            res.redirect("/login");
+            res.redirect("/user/login");
         }
     } catch (error) {
         req.session.err = "Invalid email a44ddress or password";
-        res.redirect("/login");
+        res.redirect("/user/login");
     }
 };
 
@@ -74,7 +74,7 @@ exports.home = [
             });
         } else {
             req.session.user = false;
-            res.redirect("/login");
+            res.redirect("/user/login");
         }
         } catch (error) {
         console.error("Error in the home", error.message);
@@ -85,5 +85,5 @@ exports.home = [
     // Logout logic
 exports.logout = (req, res) => {
     req.session.user = false;
-    res.redirect("/login");
+    res.redirect("/user/login");
 };
