@@ -79,3 +79,45 @@ exports.logout = (req, res) => {
   req.session.admin = false;
   res.redirect("/admin/login");
 };
+
+
+exports.userdelete = async (req, res) => {
+  try {
+    const userId = req.params.id;  
+    await collection.deleteOne({ _id: userId });  
+    res.redirect("/admin/home");  
+  } catch (error) {
+    console.error("Error deleting user:", error);
+  }
+};
+
+exports.useredit = async (req, res) => {
+  try {
+    const userId = req.params.id; 
+    const { name, email } = req.body;
+
+    await collection.updateOne(
+      { _id: userId },
+      { $set: { name: name, email: email } }
+    );
+
+    res.redirect("/admin/home");
+  } catch (error) {
+    console.error("Error updating user:", error);
+  }
+};
+
+
+exports.getEditPage = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const user = await collection.findOne({ _id: userId });
+
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+    res.render("admin/edit", { user });
+  } catch (error) {
+    console.error("Error fetching user:", error);
+  }
+};
