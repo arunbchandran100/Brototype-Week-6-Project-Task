@@ -8,18 +8,22 @@ app.set("views", path.join(__dirname, "views"));
 
 app.use(nocache());
 
+app.use(session({
+    secret: "password",
+    resave: false,
+    saveUninitialized: true,
+    })
+);
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.use(session({
-    secret:'password',
-    resave: false,
-    saveUninitialized:true,
-}))
+const userRoute = require("./routes/user");
+app.use("/user", userRoute);
 
-const userRoute = require("./routes/user")
+const adminRoute = require("./routes/admin");
+app.use("/admin", adminRoute);
 
-app.use("/user",userRoute)
 
 app.listen(3000,()=>{
     console.log('running at 3000')
