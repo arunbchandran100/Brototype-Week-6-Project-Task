@@ -1,16 +1,15 @@
 const collection = require("../models/mongodb");
 const isAuthenticated = require("../middleware/authmildware");
 
-// Signup page logic
+///////////////////Signup page/////////////////////
 exports.signup = (req, res) => {
     if (req.session.user) {
-        res.redirect("/home");
+        res.redirect("/user/home");
     } else {
-        res.render("user/signup");
+        res.render("user/signup", { message: null });
     }
 };
 
-// Signup POST logic
 exports.signuppost = async (req, res) => {
     console.log(req.body, "signup details");
 
@@ -22,67 +21,64 @@ exports.signuppost = async (req, res) => {
 
     const existingUser = await collection.findOne({ email: userData.email });
     if (existingUser) {
-        res.render("user/signup");
-        console.log("User already exists");
+        res.render("user/signup", { message: "email already exists" });
     } else {
         await collection.insertMany(userData);
         res.redirect("/user/login");
     }
 };
 
-// Login page logic
+
+///////////////////Login page/////////////////////
 exports.login = (req, res) => {
-    const errorMessage = req.session.err || " ";
-    req.session.err = " "; // Clear the error after showing it
     if (req.session.user) {
         res.redirect("/user/home");
     } else {
-        res.render("user/login", { errorMessage }); // Pass errorMessage instead of message
+        res.render("user/login", { message: null });
     }
 };
 
 exports.loginpost = async (req, res) => {
     try {
-        const check = await collection.findOne({ email: req.body.email });
+        const foundUser = await collection.findOne({ email: req.body.email });
 
-        if (check.password === req.body.password) {
+        if (foundUser.password === req.body.password) {
             console.log("Auth done");
             req.session.user = req.body.email;
             req.session.name = req.body.name;
             res.redirect("/user/home");
         } else {
-            req.session.err = "Invalid 11email address or password";
-            res.redirect("/user/login");
+            res.render("user/login", { message: "wrong password" });
         }
     } catch (error) {
-        req.session.err = "Invalid email a44ddress or password";
-        res.redirect("/user/login");
+        res.render("user/login", {message: "email id not registred"});
     }
 };
 
 
-// Home page logic, protected by isAuthenticated middleware
+///////////////////Home page/////////////////////
 exports.home = [
     isAuthenticated,
     async (req, res) => {
         try {
-        const user = await collection.findOne({ email: req.session.user });
-        if (user) {
-            res.render("user/home", {
-            userName: user.name,
-            userEmail: req.session.user,
-            });
-        } else {
-            req.session.user = false;
-            res.redirect("/user/login");
-        }
+            const user = await collection.findOne({ email: req.session.user });
+            if (user) {
+                res.render("user/home", {
+                    name: user.name,
+                    mail_id: req.session.user,
+                });
+            } 
+            
+            else {
+                req.session.user = false;
+                res.redirect("/user/login");
+            }
         } catch (error) {
-        console.error("Error in the home", error.message);
+            console.error("Error happened", error.message);
         }
     },
 ];
 
-    // Logout logic
 exports.logout = (req, res) => {
     req.session.user = false;
     res.redirect("/user/login");
