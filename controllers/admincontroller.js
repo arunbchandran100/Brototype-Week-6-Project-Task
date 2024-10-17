@@ -1,36 +1,8 @@
 const collection = require("../models/mongodb");
 const userAuthenticated = require("../middleware/adminauthmildware");
-// const { userAuthenticated, adminAuthenticated } = require("../middleware/authmildware");
 
-///////////////////Signup page/////////////////////
-// exports.signup = (req, res) => {
-//   if (req.session.user) {
-//     res.redirect("/user/home");
-//   } else {
-//     res.render("user/signup", { message: null });
-//   }
-// };
-
-// exports.signuppost = async (req, res) => {
-//   console.log(req.body, "signup details");
-
-//   const userData = {
-//     name: req.body.name,
-//     email: req.body.email,
-//     password: req.body.password,
-//   };
-
-//   const existingUser = await collection.findOne({ email: userData.email });
-//   if (existingUser) {
-//     res.render("user/signup", { message: "email already exists" });
-//   } else {
-//     await collection.insertMany(userData);
-//     res.redirect("/user/login");
-//   }
-// };
 
 ///////////////////Login page/////////////////////
-
 exports.login = (req, res) => {
   if (req.session.admin) {
     res.redirect("/admin/home");
@@ -81,6 +53,7 @@ exports.logout = (req, res) => {
 };
 
 
+///////////////////Delete User/////////////////////
 exports.userdelete = async (req, res) => {
   try {
     const userId = req.params.id;  
@@ -91,6 +64,9 @@ exports.userdelete = async (req, res) => {
   }
 };
 
+
+
+///////////////////Edit User/////////////////////
 exports.useredit = async (req, res) => {
   try {
     const userId = req.params.id; 
@@ -125,7 +101,7 @@ exports.getEditPage =[
 ]
 
 
-
+///////////////////Create User/////////////////////
 exports.createuser =[
   userAuthenticated, (req, res) => {
   if (req.session.user) {

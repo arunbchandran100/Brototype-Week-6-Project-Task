@@ -1,6 +1,6 @@
 const collection = require("../models/mongodb");
 const userAuthenticated = require("../middleware/userauthmildware");
-// const { userAuthenticated, adminAuthenticated } = require("../middleware/authmildware");
+
 
 ///////////////////Signup page/////////////////////
 exports.signup = (req, res) => {
@@ -29,6 +29,7 @@ exports.signuppost = async (req, res) => {
   }
 };
 
+
 ///////////////////Login page/////////////////////
 exports.login = (req, res) => {
   if (req.session.user) {
@@ -54,6 +55,7 @@ exports.loginpost = async (req, res) => {
     res.render("user/login", { message: "email id not registred" });
   }
 };
+
 
 ///////////////////Home page/////////////////////
 exports.home = [
