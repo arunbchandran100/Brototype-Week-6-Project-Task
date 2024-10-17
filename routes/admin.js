@@ -11,5 +11,8 @@ router.post("/logout", adminController.logout);
 router.get("/edit/:id", adminController.getEditPage);
 router.post("/edit/:id", adminController.useredit);
 router.get("/delete/:id", adminController.userdelete);
+router.get("/createuser", adminController.createuser);
+router.post("/createuser", adminController.createuserpost);
+
 
 module.exports = router;

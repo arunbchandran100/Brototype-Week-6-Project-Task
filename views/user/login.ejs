@@ -28,7 +28,6 @@
 
     <h3 style='color:red'><%= message %></h3> 
 
-
     <form action="/user/login" method="post">
       <div class="mb-3">
         <label for="email" class="form-label">Email ID</label>
@@ -47,6 +46,11 @@
       <div class="text-center mt-3">
         <span>Don't have an account? <a href="/user/signup">Sign up</a></span>
       </div> 
+
+      <!-- Admin Login Link -->
+      <div class="text-center mt-3">
+        <span>For Admin login <a href="/admin/login" class="text-danger">Login here</a></span>
+      </div>
     </form>
   </div>
 </div>

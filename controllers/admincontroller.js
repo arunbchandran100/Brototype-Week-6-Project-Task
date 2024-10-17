@@ -108,7 +108,8 @@ exports.useredit = async (req, res) => {
 };
 
 
-exports.getEditPage = async (req, res) => {
+exports.getEditPage =[
+  userAuthenticated, async (req, res) => {
   try {
     const userId = req.params.id;
     const user = await collection.findOne({ _id: userId });
@@ -120,4 +121,37 @@ exports.getEditPage = async (req, res) => {
   } catch (error) {
     console.error("Error fetching user:", error);
   }
+}
+]
+
+
+
+exports.createuser =[
+  userAuthenticated, (req, res) => {
+  if (req.session.user) {
+    res.redirect("/admin/createuser");
+  } else {
+    res.render("admin/createuser", { message: null });
+  }
+}
+]
+
+exports.createuserpost = async (req, res) => {
+  console.log(req.body, "signup details");
+
+  const userData = {
+    name: req.body.name,
+    email: req.body.email,
+    password: req.body.password,
+  };
+
+  const existingUser = await collection.findOne({ email: userData.email });
+  if (existingUser) {
+    res.render("admin/createuser", { message: "email already exists" });
+  } else {
+    await collection.insertMany(userData);
+    res.redirect("/admin/home");
+  }
 };
+
+
