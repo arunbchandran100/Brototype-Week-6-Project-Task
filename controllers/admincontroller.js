@@ -40,8 +40,8 @@ exports.home = [
       name: { $regex: new RegExp(searchQuery, "i") },
     });
 
-    console.log("Search Query:", searchQuery);
-    console.log("Users Found:", users);
+    // console.log("Search Query:", searchQuery);
+    // console.log("Users Found:", users);
 
     res.render("admin/home", { users, searchQuery });
   },
